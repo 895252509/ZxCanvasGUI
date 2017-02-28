@@ -35,7 +35,8 @@ window.onload = function(){
         style:{
             style:{
                 x:0,
-                y:0
+                y:0,
+                color : '#66FFAA'
             }
         },
         listeners:{

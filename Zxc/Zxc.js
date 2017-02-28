@@ -625,6 +625,11 @@ Zxc.Item = function(obj){
     
     //this.style.thisstyle = new Zxc.Shape.Rect(obj.style.thisstyle);
 };
+Zxc.Item.relayout = function(ctx){
+    
+    
+    
+}
 
 Zxc.UI = function(){
     /*--------** UI组件 **---------
