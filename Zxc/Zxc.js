@@ -338,20 +338,8 @@ Zxc.ZxCanvas.prototype.show = function(){
     for(var i= 0; i< this.items.length; i++){
         var thisCom = this.items[i];
         var style = thisCom.style.style;
-        switch (thisCom.type){
-            case 'Lable':
-                content.save();
-                content.fillStyle = style.color || 'black';
-                content.font = style.font || content.font;
-                content.textBaseline = 'top';
-                content.fillText(thisCom.data.text,style.x,style.y,content.measureText(thisCom.data.text).width);
-                content.restore();
-                
-                break;
-        }
         
-        
-        
+        thisCom.Show();
         
     }
 }
@@ -538,7 +526,7 @@ Zxc.ItemBase = function (){
     //保存UI元素的数据
     function itemData(){
         this.text =     null;
-        this.position = null;
+        this.position = new Zxc.Shape.Point();
     }
     
     //保存UI元素的样式的类
@@ -549,10 +537,11 @@ Zxc.ItemBase = function (){
         this.w = null;
         this.h = null;
         this.color = null;
+        this.bgcolor = null;
     }
     //样式列表
     function itemStyle(){
-        this.style     = new baseStyle();
+        this.style         = new baseStyle();
         this.loadStyle     = new baseStyle();
         this.clickStyle    = new baseStyle();
         this.disableStyle  = new baseStyle(); 
@@ -620,13 +609,47 @@ Zxc.Item = function(obj){
     this.state.moved    = false;
     
     this.type = 'Item';
+    this.canvas_ctx = null;
     
     Zx.Util.copyAttrToTarget(this,obj);
     
+    this.relayout();
     //this.style.thisstyle = new Zxc.Shape.Rect(obj.style.thisstyle);
 };
-Zxc.Item.relayout = function(ctx){
+Zxc.Item.prototype.Show= function(){debugger;
+    var content = this.canvas_ctx;
+    var theStyle = this.style.style;
     
+    if(theStyle.bgcolor !== null && typeof theStyle.bgcolor !== 'undefined' && typeof theStyle.bgcolor === 'string'){
+        content.save();
+        content.fillStyle = theStyle.bgcolor;
+        Zxc.Canvas.fillRect(content,theStyle);
+        content.restore();
+    }
+    content.save();
+    content.fillStyle = theStyle.color || 'black';
+    content.font = theStyle.font || content.font;
+    content.textBaseline = 'top';
+    content.fillText(this.data.text,theStyle.x,theStyle.y,theStyle.w);
+    content.restore();
+    
+}
+
+Zxc.Item.prototype.relayout = function(){
+    this.type = 'Item';
+    this.data.text =  'Item';
+    this.data.position.x = this.style.style.x || 0;
+    this.data.position.y = this.style.style.y || 0;
+    if(this.canvas_ctx === null){
+     //如果没有Canvas Context 
+        this.style.style.w = 20;
+        this.style.style.h = 10;
+        this.style.style.color = 'block';
+    }else{
+    //如果存在Canvas Context，则可以通过其计算最小尺寸
+        this.style.style.w = this.style.style.w || this.canvas_ctx.measureText(this.data.text).width;
+        this.style.style.h = this.style.style.h || 12;
+    }
     
     
 }
@@ -657,14 +680,30 @@ Zxc.UI = function(){
     function Lable(obj){
         debugger;
         Zxc.Item.call(this,obj);
+        this.relayout();
         
         this.type = 'Lable';
-        this.data.text = '新标签';
-        this.data.position = new Zxc.Shape.Point();
-        
+
         if(typeof this.listeners.oninit !== 'undefined') this.listeners.oninit(); 
     }
     Lable.prototype = new Zxc.Item();
+    Lable.prototype.relayout = function(){
+        //Object.getPrototypeOf(Object.getPrototypeOf(this)).relayout.call(this);
+
+        Zxc.Item.prototype.relayout.call(this);
+        
+        delete this.style.toggleAfterStyle;
+        delete this.style.toggleBeforeStyle;
+        delete this.style.loadStyle;
+        
+        this.data.text = '新标签';
+        
+    }
+    Lable.prototype.Show= function(){
+        Object.getPrototypeOf(Object.getPrototypeOf(this)).Show.call(this);
+        
+        
+    }
     
     
     

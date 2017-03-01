@@ -12,18 +12,19 @@ window.onload = function(){
     ican.Initialization('z-canvas');
     
     var a=  new Zxc.Item({
+        canvas_ctx : ican.getContent(),
         style:{
             style:{
-                x:0,
-                y:0,
+                x:30,
+                y:50,
                 w:200,
-                h:300
+                h:300,
+                color : '#2452FF'
             }
         }
     });
     ican.add(a);
-    ican.show();
-
+    
     ican.clear({
         x:0,
         y:0,
@@ -32,11 +33,15 @@ window.onload = function(){
     });
     
     var lable = new Zxc.UI.Lable({
+        canvas_ctx : ican.getContent(),
         style:{
             style:{
-                x:0,
-                y:0,
-                color : '#66FFAA'
+                x:10,
+                y:20,
+                w:100,
+                h:20,
+                color : '#FFFFFF',
+                bgcolor : '#aaaaaa'
             }
         },
         listeners:{
