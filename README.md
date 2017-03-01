@@ -4,6 +4,7 @@
 
 #Canvas
 
+<div class="bg-green" width="20px" height="20px"><div/>
 <hr style="height:5px;" />
 <hr style="height:5px;float:left;margin-left:20px;margin-top:8px;border:2px solid;" />
 
