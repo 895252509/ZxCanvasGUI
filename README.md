@@ -4,8 +4,7 @@
 
 <h1 style="color:red;">Canvas<h1/>
 
-<a style="border:1px solid #8000ff;border-radius:5px;width:10px;height:10px;margin-left:20px;"/>
-<a style="border:1px solid #8000ff;border-radius:5px;width:10px;height:10px;margin-left:20px;"/>
-<a style="border:1px solid #8000ff;border-radius:5px;width:10px;height:10px;margin-left:20px;"/>
-
+<a style="display:inline-block;border:1px solid #8000ff;border-radius:5px;width:10px;height:10px;margin-top:8px;margin-left:20px;background-color:#8000ff"></a>
+<a style="display:inline-block;border:1px solid #8000ff;border-radius:5px;width:10px;height:10px;margin-top:8px;margin-left:20px;background-color:#8000ff"></a>
+<a style="display:inline-block;border:1px solid #8000ff;border-radius:5px;width:10px;height:10px;margin-top:8px;margin-left:20px;background-color:#8000ff"></a>
 
