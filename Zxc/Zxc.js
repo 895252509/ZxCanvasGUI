@@ -390,6 +390,27 @@ Zxc.ZxCanvas.prototype.getContent = function(){
 
 
 Zxc.Util = function (){
+    //解析font
+    function decodeFont(font){
+        var fontDesc =  font.split(' ');
+        var px = null;
+        for(var i=0;i< fontDesc.length;i++){
+            if(fontDesc[i].split('px').length > 1){
+                px = fontDesc[i].split('px')[0];
+            }
+        }
+        
+        return {
+            font_size : px
+        }
+    }
+    
+    
+    return {
+        decodeFont      : decodeFont
+        
+        
+    }
     
 }();
 
@@ -648,7 +669,7 @@ Zxc.Item.prototype.relayout = function(){
     }else{
     //如果存在Canvas Context，则可以通过其计算最小尺寸
         this.style.style.w = this.style.style.w || this.canvas_ctx.measureText(this.data.text).width;
-        this.style.style.h = this.style.style.h || 12;
+        this.style.style.h = this.style.style.h ||  Zxc.Util.decodeFont(this.canvas_ctx.font).font_size;
     }
     
     

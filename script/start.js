@@ -26,10 +26,6 @@ window.onload = function(){
     ican.add(a);
     ican.show();
     debugger;
-    ican.clear({
-        x:0,y:0,w:200,h:200
-    });
-    debugger;
     var lable = new Zxc.UI.Lable({
         canvas_ctx : ican.getContent(),
         style:{
@@ -50,7 +46,10 @@ window.onload = function(){
     });
     ican.add(lable);
     ican.show();
-    ican.clear({
-        x:0,y:0,w:100,h:100
+    
+    ican.canvas_ctx.save();
+    ican.canvas_ctx.lineWidth = 2;
+    Zxc.Canvas.strokeRect(ican.canvas_ctx,{
+        x:100,y:100,w:30,h:30
     });
 }
