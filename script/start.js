@@ -24,14 +24,12 @@ window.onload = function(){
         }
     });
     ican.add(a);
-    
+    ican.show();
+    debugger;
     ican.clear({
-        x:0,
-        y:0,
-        w:20,
-        h:30
+        x:0,y:0,w:200,h:200
     });
-    
+    debugger;
     var lable = new Zxc.UI.Lable({
         canvas_ctx : ican.getContent(),
         style:{
@@ -52,5 +50,7 @@ window.onload = function(){
     });
     ican.add(lable);
     ican.show();
-    
+    ican.clear({
+        x:0,y:0,w:100,h:100
+    });
 }

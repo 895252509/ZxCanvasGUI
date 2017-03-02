@@ -243,8 +243,8 @@ Zxc.Canvas = function (){
     }
     
     function clearRect(obj,rect){
-        rect.w = rect.w === 0? undefined : rect.w;
-        rect.h = rect.h === 0? undefined : rect.h;
+        rect.w = rect.w ? rect.w : obj.canvas.clientWidth;
+        rect.h = rect.h ? rect.h : obj.canvas.clientHeight;
         obj.clearRect(
             rect.x,
             rect.y,
