@@ -17,9 +17,10 @@ window.onload = function(){
             style:{
                 x:30,
                 y:50,
-                w:200,
-                h:300,
-                color : '#2452FF'
+                w:20,
+                h:30,
+                color : '#2452FF',
+                border : '2px solid #b7eb28'
             }
         }
     });
@@ -33,8 +34,10 @@ window.onload = function(){
                 y:20,
                 w:100,
                 h:20,
+                font : '30px',
                 color : '#FFFFFF',
-                bgcolor : '#aaaaaa'
+                bgcolor : '#aaaaaa',
+                border : '2px solid #ff00a7'
             }
         },
         listeners:{
