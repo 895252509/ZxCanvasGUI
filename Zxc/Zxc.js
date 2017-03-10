@@ -559,6 +559,7 @@ Zxc.ItemBase = function (){
         this.h = null;
         this.color = null;
         this.bgcolor = null;
+        this.border = null;
     }
     //样式列表
     function itemStyle(){
@@ -701,7 +702,6 @@ Zxc.UI = function(){
     function Lable(obj){
         debugger;
         Zxc.Item.call(this,obj);
-        this.relayout();
         
         this.type = 'Lable';
 
@@ -709,7 +709,8 @@ Zxc.UI = function(){
     }
     Lable.prototype = new Zxc.Item();
     Lable.prototype.relayout = function(){
-        //Object.getPrototypeOf(Object.getPrototypeOf(this)).relayout.call(this);
+        debugger;
+        //Object.getPrototypeOf(this).relayout.call(this);
 
         Zxc.Item.prototype.relayout.call(this);
         

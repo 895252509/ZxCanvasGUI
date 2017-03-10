@@ -24,7 +24,6 @@ window.onload = function(){
         }
     });
     ican.add(a);
-    ican.show();
     debugger;
     var lable = new Zxc.UI.Lable({
         canvas_ctx : ican.getContent(),
