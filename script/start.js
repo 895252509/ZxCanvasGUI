@@ -15,10 +15,11 @@ window.onload = function(){
         canvas_ctx : ican.getContent(),
         style:{
             style:{
-                x:30,
-                y:50,
-                w:20,
+                x:0,
+                y:200,
+                w:200,
                 h:30,
+                font: '20px',
                 color : '#2452FF',
                 border : '2px solid #b7eb28'
             }
@@ -30,10 +31,10 @@ window.onload = function(){
         canvas_ctx : ican.getContent(),
         style:{
             style:{
-                x:10,
-                y:20,
-                w:100,
-                h:20,
+                x:0,
+                y:300,
+                w:200,
+                h:60,
                 font : '30px',
                 color : '#FFFFFF',
                 bgcolor : '#aaaaaa',

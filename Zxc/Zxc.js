@@ -469,7 +469,7 @@ Zxc.Util = function (){
         }
         
         if(fontDesc.length === 1){
-            fontFam = 'Micorsoft YaHei';
+            fontFam = 'Microsoft YaHei';
         }
         
         return {
@@ -756,7 +756,7 @@ debugger;
 debugger;
     content.fillText(this.data.text,
         theStyle.x + (theStyle.w- (content.measureText(this.data.text).width))/2,
-        theStyle.y + (theStyle.h- (ifont.font_size||12))/2, 
+        theStyle.y + (theStyle.h- (ifont.font_size||12))/2 - 5, 
         theStyle.w);
     content.restore();
     
@@ -771,14 +771,21 @@ Zxc.Item.prototype.relayout = function(){
     if(this.canvas_ctx === null){
      //如果没有Canvas Context 
         this.style.style.w = 20;
-        this.style.style.h = 10;
+        this.style.style.h = 12;
         this.style.style.color = 'block';
     }else{
     //如果存在Canvas Context，则可以通过其计算最小尺寸
         this.style.style.w = this.style.style.w || this.canvas_ctx.measureText(this.data.text).width;
-        this.style.style.h = this.style.style.h 
-            || Zxc.Util.decodeFont(this.style.style.font).font_size 
-            || Zxc.Util.decodeFont(this.canvas_ctx.font).font_size;
+        if(typeof this.style.style.h === 'undefined'){
+            this.style.style.h = Zxc.Util.decodeFont(this.style.style.font).font_size  
+            || Zxc.Util.decodeFont(this.canvas_ctx.font).font_size ;
+        }else {
+            this.style.style.h = this.style.style.font ===null? 
+            (Zxc.Util.decodeFont(this.canvas_ctx.font).font_size ):
+            ( this.style.style.h < Zxc.Util.decodeFont(this.style.style.font).font_size ? 
+            ( Zxc.Util.decodeFont(this.style.style.font).font_size  ) :  this.style.style.h );
+        }
+        
     }
     if(this.style.style.font){
         var ifont = Zxc.Util.decodeFont(this.style.style.font); 
