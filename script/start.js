@@ -18,8 +18,8 @@ window.onload = function(){
                 x:0,
                 y:200,
                 w:200,
-                h:30,
-                font: '20px',
+                h:3,
+                font: '45px',
                 color : '#2452FF',
                 border : '2px solid #b7eb28'
             }
@@ -34,11 +34,10 @@ window.onload = function(){
                 x:0,
                 y:300,
                 w:200,
-                h:60,
-                font : '30px',
+                h:1,
+                font : '40px',
                 color : '#FFFFFF',
                 bgcolor : '#aaaaaa',
-                border : '2px solid #ff00a7'
             }
         },
         listeners:{
