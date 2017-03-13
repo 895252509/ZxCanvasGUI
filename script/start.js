@@ -15,8 +15,8 @@ window.onload = function(){
         canvas_ctx : ican.getContent(),
         style:{
             style:{
-                x:0,
-                y:200,
+                x:30,
+                y:50,
                 w:200,
                 h:3,
                 font: '45px',
@@ -26,6 +26,11 @@ window.onload = function(){
         }
     });
     ican.add(a);
+    ican.show();
+    debugger;
+    ican.clear({
+        x:0,y:0,w:200,h:200
+    });
     debugger;
     var lable = new Zxc.UI.Lable({
         canvas_ctx : ican.getContent(),
@@ -37,7 +42,7 @@ window.onload = function(){
                 h:1,
                 font : '40px',
                 color : '#FFFFFF',
-                bgcolor : '#aaaaaa',
+                bgcolor : '#aaaaaa'
             }
         },
         listeners:{
@@ -48,10 +53,7 @@ window.onload = function(){
     });
     ican.add(lable);
     ican.show();
-    
-    ican.canvas_ctx.save();
-    ican.canvas_ctx.lineWidth = 2;
-    Zxc.Canvas.strokeRect(ican.canvas_ctx,{
-        x:100,y:100,w:30,h:30
+    ican.clear({
+        x:0,y:0,w:100,h:100
     });
 }
