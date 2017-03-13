@@ -15,30 +15,31 @@ window.onload = function(){
         canvas_ctx : ican.getContent(),
         style:{
             style:{
-                x:0,
-                y:200,
+                x:30,
+                y:50,
                 w:200,
-                h:30,
-                font: '20px',
-                color : '#2452FF',
-                border : '2px solid #b7eb28'
+                h:300,
+                color : '#2452FF'
             }
         }
     });
     ican.add(a);
+    ican.show();
+    debugger;
+    ican.clear({
+        x:0,y:0,w:200,h:200
+    });
     debugger;
     var lable = new Zxc.UI.Lable({
         canvas_ctx : ican.getContent(),
         style:{
             style:{
-                x:0,
-                y:300,
-                w:200,
-                h:60,
-                font : '30px',
+                x:10,
+                y:20,
+                w:100,
+                h:20,
                 color : '#FFFFFF',
-                bgcolor : '#aaaaaa',
-                border : '2px solid #ff00a7'
+                bgcolor : '#aaaaaa'
             }
         },
         listeners:{
@@ -49,10 +50,7 @@ window.onload = function(){
     });
     ican.add(lable);
     ican.show();
-    
-    ican.canvas_ctx.save();
-    ican.canvas_ctx.lineWidth = 2;
-    Zxc.Canvas.strokeRect(ican.canvas_ctx,{
-        x:100,y:100,w:30,h:30
+    ican.clear({
+        x:0,y:0,w:100,h:100
     });
 }
