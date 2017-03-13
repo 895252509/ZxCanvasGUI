@@ -18,8 +18,10 @@ window.onload = function(){
                 x:30,
                 y:50,
                 w:200,
-                h:300,
-                color : '#2452FF'
+                h:3,
+                font: '45px',
+                color : '#2452FF',
+                border : '2px solid #b7eb28'
             }
         }
     });
@@ -34,10 +36,11 @@ window.onload = function(){
         canvas_ctx : ican.getContent(),
         style:{
             style:{
-                x:10,
-                y:20,
-                w:100,
-                h:20,
+                x:0,
+                y:300,
+                w:200,
+                h:1,
+                font : '40px',
                 color : '#FFFFFF',
                 bgcolor : '#aaaaaa'
             }

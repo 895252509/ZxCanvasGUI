@@ -616,8 +616,8 @@ Zxc.Item = function(obj){
     this.relayout();
     //this.style.thisstyle = new Zxc.Shape.Rect(obj.style.thisstyle);
 };
-Zxc.Item.prototype.Show= function(){debugger;
-    var content = this.canvas_ctx;
+Zxc.Item.prototype.Show= function(){
+    var content  = this.canvas_ctx;
     var theStyle = this.style.style;
     
     if(theStyle.bgcolor !== null && typeof theStyle.bgcolor !== 'undefined' && typeof theStyle.bgcolor === 'string'){
@@ -629,8 +629,17 @@ Zxc.Item.prototype.Show= function(){debugger;
     content.save();
     content.fillStyle = theStyle.color || 'black';
     content.font = theStyle.font || content.font;
-    content.textBaseline = 'top';
-    content.fillText(this.data.text,theStyle.x,theStyle.y,theStyle.w);
+
+    var ifont={};
+    if(theStyle.font)
+        ifont = Zxc.Util.decodeFont(theStyle.font);
+    content.textBaseline = 'hanging';
+    
+debugger;
+    content.fillText(this.data.text,
+        theStyle.x + (theStyle.w- (content.measureText(this.data.text).width))/2,
+        theStyle.y + (theStyle.h- (ifont.font_size||12))/2+ 1, 
+        theStyle.w);
     content.restore();
     
 }
