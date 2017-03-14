@@ -11,7 +11,7 @@
 */
 var DEBUGGER = true;
 
-var Zx = function (){
+var Zx = (function (){
     /*
     Zx 立即执行函数
     命名空间，一些常用函数
@@ -24,9 +24,9 @@ var Zx = function (){
     return {
         info : info
     }
-}();
+})();
 
-Zx.Util = function(){
+Zx.Util = (function(){
     function getBrowser(){
         return navigator.appName +
             ' \n '+
@@ -152,6 +152,33 @@ Zx.Util = function(){
         return -1;
     }
     
+    /*
+    消除数组内，未定义的量，字符串为空的量
+    */
+    function trimArray(obj){
+        var arr = [];
+        for(var i=0;i< obj.length;i++){
+            if(typeof obj[i] === 'undefined' || obj[i] === ""){
+                var a = i;
+                arr.push(a);
+                continue;
+            }else {
+                if(arr.length === 0){
+                    continue;
+                }else {
+                    obj[arr[0]] = obj[i];
+                    arr.shift();
+                }
+            }   
+        }
+        
+        if(arr.length !== 0){
+            for(var i= obj.length; i> arr.length; i--){
+                delete obj[i];
+                obj.length --;
+            }
+        }
+    }
 
     function initClassByObj(obj,objfrom){
         if( !isObject(obj) )throw Error('Error: Zx.Util.initClassByObj() \n\t参数必须是一个对象！');
@@ -193,6 +220,8 @@ Zx.Util = function(){
         isObject    : isObject1,
         isNaN       : isNaN,
         isArrayHas  : isArrayHas,
+        isInArray   : isInArray,
+        trimArray   : trimArray,
         
         copyObject  : copyObject,
         getRandomInt: getRandomInt,
@@ -201,9 +230,9 @@ Zx.Util = function(){
         copyAttrToTarget        : copyAttrToTarget,
         initClassByObj          : initClassByObj
     }
-}();
+})();
 
-var Zxc = function (){
+var Zxc = (function (){
     
     function info(){
         
@@ -215,9 +244,23 @@ var Zxc = function (){
         info : info
     }
     
-}();
+})();
 
-Zxc.Canvas = function (){
+Zxc.Enum = (function (){
+    var LineStyle = [];
+    LineStyle.DASH = 'dash';
+    LineStyle.SOLID = 'solid';
+    LineStyle.push(LineStyle.DASH);
+    LineStyle.push(LineStyle.SOLID);
+    
+    return {
+        LineStyle   : LineStyle
+        
+        
+    }
+})();
+
+Zxc.Canvas = (function (){
     /* ---!! 矫正canvas strokeRect函数绘图发虚问题，代替原本的strokeRect
     参数必须是两个，
     1. canvas handle
@@ -259,7 +302,7 @@ Zxc.Canvas = function (){
         fillRect        : fillRect,
         clearRect       : clearRect
     }
-}();
+})();
 
 
 //var Zxc = function(){
@@ -390,6 +433,57 @@ Zxc.ZxCanvas.prototype.getContent = function(){
 
 
 Zxc.Util = function (){
+    //解析border 
+    function decodeBorder(border){
+        var iborders = border.split(' ');
+        var iborder = {};
+        Zx.Util.trimArray(iborders);
+        for(var i=0; i< iborders.length; i++ ){
+            if( iborders[i].indexOf('px') >= 0){
+                iborder.borderWidth = Number(iborders[i].substring(0,iborders[i].indexOf('px')));
+            }else if( iborders[i].charAt(0) === '#'){
+                iborder.borderColor = iborders[i];
+            }else if( Zx.Util.isInArray(Zxc.Enum.LineStyle,iborders[i]) != -1) {
+                iborder.borderStyle = iborders[i];
+            }else {
+                
+            }
+        }
+        return iborder;
+    }
+    
+    
+    //解析font
+    function decodeFont(font){
+        if(typeof font === 'undefined') return null;
+        var fontDesc =  font.split(' ');
+        Zx.Util.trimArray(fontDesc);
+        var px = null;
+        var fontFam = null;
+        for(var i=0;i< fontDesc.length;i++){
+            if(fontDesc[i].split('px').length > 1){
+                px = Number(fontDesc[i].split('px')[0]);
+            }else{
+                fontFam = fontDesc[i];
+            }
+        }
+        
+        if(fontDesc.length === 1){
+            fontFam = 'Microsoft YaHei';
+        }
+        
+        return {
+            font_size : px,
+            fontFamily  : fontFam
+        }
+    }
+    
+    
+    return {
+        decodeFont      : decodeFont,
+        decodeBorder    : decodeBorder
+        
+    }
     
 }();
 
@@ -536,8 +630,10 @@ Zxc.ItemBase = function (){
         this.y = null;
         this.w = null;
         this.h = null;
+        this.font = null;
         this.color = null;
         this.bgcolor = null;
+        this.border = null;
     }
     //样式列表
     function itemStyle(){
@@ -620,6 +716,29 @@ Zxc.Item.prototype.Show= function(){
     var content  = this.canvas_ctx;
     var theStyle = this.style.style;
     
+debugger;
+    if(theStyle.border !== null && typeof theStyle.border !== 'undefined' && typeof theStyle.border === 'string'){
+        var iborder = theStyle.border;
+        iborder = Zxc.Util.decodeBorder(iborder);
+        
+        content.save();
+        content.lineWidth = iborder.borderWidth;
+        content.strokeStyle  = iborder.borderColor;
+        if( iborder.borderStyle === Zxc.Enum.LineStyle.SOLID ){
+            
+        }else if( iborder.borderStyle === Zxc.Enum.LineStyle.DASH ){
+            content.setLineDash([4,2]);
+            content.lineDashOffset = 2;
+        }
+        Zxc.Canvas.strokeRect(content,{
+            x : theStyle.x- iborder.borderWidth/2,
+            y : theStyle.y- iborder.borderWidth/2,
+            w : theStyle.w+ iborder.borderWidth,
+            h : theStyle.h+ iborder.borderWidth
+        });
+        content.restore();
+    }
+                                    
     if(theStyle.bgcolor !== null && typeof theStyle.bgcolor !== 'undefined' && typeof theStyle.bgcolor === 'string'){
         content.save();
         content.fillStyle = theStyle.bgcolor;
@@ -629,7 +748,6 @@ Zxc.Item.prototype.Show= function(){
     content.save();
     content.fillStyle = theStyle.color || 'black';
     content.font = theStyle.font || content.font;
-
     var ifont={};
     if(theStyle.font)
         ifont = Zxc.Util.decodeFont(theStyle.font);
@@ -649,17 +767,30 @@ Zxc.Item.prototype.relayout = function(){
     this.data.text =  'Item';
     this.data.position.x = this.style.style.x || 0;
     this.data.position.y = this.style.style.y || 0;
+    
     if(this.canvas_ctx === null){
      //如果没有Canvas Context 
         this.style.style.w = 20;
-        this.style.style.h = 10;
+        this.style.style.h = 12;
         this.style.style.color = 'block';
     }else{
     //如果存在Canvas Context，则可以通过其计算最小尺寸
         this.style.style.w = this.style.style.w || this.canvas_ctx.measureText(this.data.text).width;
-        this.style.style.h = this.style.style.h || 12;
+        if(typeof this.style.style.h === 'undefined'){
+            this.style.style.h = Zxc.Util.decodeFont(this.style.style.font).font_size  
+            || Zxc.Util.decodeFont(this.canvas_ctx.font).font_size ;
+        }else {
+            this.style.style.h = this.style.style.font ===null? 
+            (Zxc.Util.decodeFont(this.canvas_ctx.font).font_size ):
+            ( this.style.style.h < Zxc.Util.decodeFont(this.style.style.font).font_size ? 
+            ( Zxc.Util.decodeFont(this.style.style.font).font_size  ) :  this.style.style.h );
+        }
+        
     }
-    
+    if(this.style.style.font){
+        var ifont = Zxc.Util.decodeFont(this.style.style.font); 
+        this.style.style.font = ifont.font_size.toString()+'px'+' '+ifont.fontFamily;
+    }
     
 }
 
@@ -689,7 +820,6 @@ Zxc.UI = function(){
     function Lable(obj){
         debugger;
         Zxc.Item.call(this,obj);
-        this.relayout();
         
         this.type = 'Lable';
 
@@ -697,7 +827,8 @@ Zxc.UI = function(){
     }
     Lable.prototype = new Zxc.Item();
     Lable.prototype.relayout = function(){
-        //Object.getPrototypeOf(Object.getPrototypeOf(this)).relayout.call(this);
+        debugger;
+        //Object.getPrototypeOf(this).relayout.call(this);
 
         Zxc.Item.prototype.relayout.call(this);
         
@@ -709,6 +840,7 @@ Zxc.UI = function(){
         
     }
     Lable.prototype.Show= function(){
+        debugger;
         Object.getPrototypeOf(Object.getPrototypeOf(this)).Show.call(this);
         
         
