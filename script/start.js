@@ -43,6 +43,9 @@ window.onload = function(){
         listeners:{
             oninit:function (){
                 console.log('lable oninit');
+            },
+            onclick : function (){
+                alert('   ');
             }
         }
     });

@@ -22,7 +22,57 @@ script》书中学习的有效例程。
 框树形列表，面板等
     
     
-
+    /*
+    Item  UI组件的基类 
+    
+       定义组件的样式 包括基本样式，加载样式，点击
+    样式，切换样式,禁用和启用样式，辅样式（用于样式
+    有较大变化，或者需要不同的状态时使用）,样式的定义
+    应该向CSS的语法靠近。
+    
+    Item = {
+        data:{
+            text ,
+            position ,
+        }
+        style : {                                           
+            thisstyle :{ 基本样式},
+            loadstyle:{ 加载样式},
+            clickstyle:{ 点击样式},
+            togglebeforestyle:{ 切换前样式 },
+            toggleafterstyle:{ 切换后样式},
+            disablestyle:{  禁用样式},
+            enablestyle:{  启用样式},
+            overstyle: {   划过样式}
+        }
+        
+        cando : [      定义组件的能力  bool变量的数组
+            isMove,         是否可以移动
+            isClick,        是否可以被点击
+            isToggle,       是否是一个开关组件
+            isFocus         是否是一个可以聚焦的组件
+        ],
+        
+        listeners :{        组件的事件监听
+            onclick,
+            oninit,
+            ondistroy,
+            onready,
+            onmouseover,
+            onmouseout, 
+            toggle,
+            onfocus,
+            blur,
+        }
+        
+        state : {
+            clicked ,
+            moved,
+            hidden,
+        }
+    }
+    
+    */
 
 
 

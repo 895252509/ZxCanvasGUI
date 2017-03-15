@@ -2,12 +2,6 @@
 * Zxc 库？  能不能实现..... 写着玩吧    
 *Zx canvas 目的是专门针对canvas,画图 画导图，图表，简单的UI
 *
-*
-*开始？   只Chrom浏览器
-*1. 首先要拿到一个DOM对象吧。
-*2. 实现事件的监听
-*3. 创建一个菜单类
-*
 */
 var DEBUGGER = true;
 
@@ -260,6 +254,18 @@ Zxc.Enum = (function (){
     }
 })();
 
+Zxc.Error = (function (){
+    //传入参数的类型错误
+    var paramTypeError = new Error('参数类型不正确！');
+    var notExistProperty = new Error('不存在的属性！');
+    
+    return {
+        ParamTypeError : paramTypeError,
+        NotExistProperty : notExistProperty
+    }
+    
+})();
+
 Zxc.Canvas = (function (){
     /* ---!! 矫正canvas strokeRect函数绘图发虚问题，代替原本的strokeRect
     参数必须是两个，
@@ -315,17 +321,54 @@ Zxc.ZxCanvas=  function (){
     //canvas dom 全局变量
     this.dom_canvas = {};
     this.canvas_ctx = {};
+    //记录鼠标点击位置
+    this.mouseClickPos = new Zxc.Shape.Point();
+    //记录鼠标当前移动位置
+    this.mousePos = new Zxc.Shape.Point();
     
     this.event_names= Object.create(null);
     
-    this.event_names.click       = function(e){};
+    //鼠标点击事件
+    this.event_names.click       = function(e){
+        e.srcElement.ZxCanvas.mousePos = new Zxc.Shape.Point(e.offsetX,e.offsetY);
+        var theCanvas = e.srcElement.ZxCanvas;
+        var theMousePos = e.srcElement.ZxCanvas.mousePos;
+        
+        for(var i= 0; i< theCanvas.items.length; i++){
+            var theItem = theCanvas.items[i];
+            if(theMousePos.isInRect( theItem.data.rect )){
+                if(theItem.listeners.onclick !== null)
+                    theItem.listeners.onclick();
+            }
+        }
+        
+        var rect = new Zxc.Shape.Rect(theCanvas.items[0].data.rect);
+        theMousePos.isInRect(rect);
+        
+        console.log('mouse click X:'+theMousePos.x+' Y:'+theMousePos.y);
+        
+        //debugger;
+    };
+    //鼠标双击事件
     this.event_names.dblclick    = function(e){};
+    //鼠标右击打开菜单的事件
     this.event_names.contextmenu = function(e){return false;};
+    //鼠标滚轮滑动事件
     this.event_names.wheel       = function(e){var attr = 'wheelDelta';console.log(attr +' : '+ e[attr]);};
-    this.event_names.mousemove   = function(e){};
+    //鼠标移动事件
+    this.event_names.mousemove   = function(e){
+        e.srcElement.ZxCanvas.mousePos = new Zxc.Shape.Point(e.offsetX,e.offsetY);
+        var theMousePos = e.srcElement.ZxCanvas.mousePos;
+        console.log('mouse move X:'+theMousePos.x+' Y:'+theMousePos.y);
+        
+    };
+    //鼠标抬起事件
     this.event_names.mouseup     = function(e){};
+    //鼠标滑过事件
     this.event_names.mouseover   = function(e){};
+    //鼠标移出事件
     this.event_names.mouseout    = function(e){};
+    //键盘按下事件
     this.event_names.keydown     = function(e){};
     this.event_names.keypress    = function(e){};
     this.event_names.keyup       = function(e){};
@@ -348,6 +391,7 @@ Zxc.ZxCanvas.prototype.Initialization = function(arg){
     }else if( typeof arg === 'string'){
        this.dom_canvas= document.getElementById(arg);
     }
+    this.dom_canvas.ZxCanvas = this;
     
     this.canvas_ctx = this.dom_canvas.getContext('2d');
     
@@ -496,6 +540,23 @@ Zxc.Shape = function(){
         this.x = x || 0;
         this.y = y || 0;
     }
+    Point.prototype.isOrigin= function(){
+        return this.x === 0 && this.y === 0;
+    }
+    //判断点是不是在一个矩形里面
+    Point.prototype.isInRect = function (rect){
+        if(! rect instanceof Zxc.Shape.Rect)
+            throw Zxc.Error.ParamTypeError;
+        if( rect.isNull() ) 
+            return false;
+        if( this.x >= rect.left  &&
+            this.x <= rect.right && 
+            this.y >= rect.top   &&
+            this.y <= rect.bottom)
+            return true;
+        return false;
+    }
+    
     /*
     定义一个四元数 Around 表示四个方向
     
@@ -514,11 +575,11 @@ Zxc.Shape = function(){
     
     */
     function Rect(obj){
+        if(typeof obj === 'undefined') obj = {};
         
         //继承自四元数
         if( typeof obj !== 'object'){
-            console.log('Rect:目前参数必须为对象.');
-            return;
+            throw new Error('Rect:目前参数必须为对象.');
         }
         
         /*
@@ -551,6 +612,12 @@ Zxc.Shape = function(){
         this.h      = this.bottom - this.top;
     }
     Rect.prototype= new Around();  
+    Rect.prototype.isNull = function(){
+        if(this.w === 0 && this.h === 0)
+            return true;
+        return false;
+    }
+    
     /*-------------** 圆 **--------------------------
     定义圆
     
@@ -566,61 +633,18 @@ Zxc.Shape = function(){
 }();
 
     /*
-    Item  UI组件的基类 
-    
+    Item  UI组件的基类
        定义组件的样式 包括基本样式，加载样式，点击
     样式，切换样式,禁用和启用样式，辅样式（用于样式
     有较大变化，或者需要不同的状态时使用）,样式的定义
     应该向CSS的语法靠近。
-    
-    Item = {
-        data:{
-            text ,
-            position ,
-        }
-        style : {                                           
-            thisstyle :{ 基本样式},
-            loadstyle:{ 加载样式},
-            clickstyle:{ 点击样式},
-            togglebeforestyle:{ 切换前样式 },
-            toggleafterstyle:{ 切换后样式},
-            disablestyle:{  禁用样式},
-            enablestyle:{  启用样式},
-            overstyle: {   划过样式}
-        }
-        
-        cando : [      定义组件的能力  bool变量的数组
-            isMove,         是否可以移动
-            isClick,        是否可以被点击
-            isToggle,       是否是一个开关组件
-            isFocus         是否是一个可以聚焦的组件
-        ],
-        
-        listeners :{        组件的事件监听
-            onclick,
-            oninit,
-            ondistroy,
-            onready,
-            onmouseover,
-            onmouseout, 
-            toggle,
-            onfocus,
-            blur,
-        }
-        
-        state : {
-            clicked ,
-            moved,
-            hidden,
-        }
-    }
-    
     */
 Zxc.ItemBase = function (){
     //保存UI元素的数据
     function itemData(){
         this.text =     null;
         this.position = new Zxc.Shape.Point();
+        this.rect = new Zxc.Shape.Rect();
     }
     
     //保存UI元素的样式的类
@@ -785,7 +809,12 @@ Zxc.Item.prototype.relayout = function(){
             ( this.style.style.h < Zxc.Util.decodeFont(this.style.style.font).font_size ? 
             ( Zxc.Util.decodeFont(this.style.style.font).font_size  ) :  this.style.style.h );
         }
-        
+        this.data.rect = new Zxc.Shape.Rect({
+            x : this.data.position.x,
+            y : this.data.position.y,
+            w : this.style.style.w,
+            h : this.style.style.h
+        });
     }
     if(this.style.style.font){
         var ifont = Zxc.Util.decodeFont(this.style.style.font); 
