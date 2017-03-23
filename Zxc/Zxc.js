@@ -329,7 +329,7 @@ Zxc.ZxCanvas=  function (){
     this.event_names= Object.create(null);
     
     //鼠标点击事件
-    this.event_names.click       = function(e){
+    this.event_names.click= function(e){
         e.srcElement.ZxCanvas.mousePos = new Zxc.Shape.Point(e.offsetX,e.offsetY);
         var theCanvas = e.srcElement.ZxCanvas;
         var theMousePos = e.srcElement.ZxCanvas.mousePos;

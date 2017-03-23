@@ -23,6 +23,11 @@ window.onload = function(){
                 color : '#2452FF',
                 border : '2px solid #b7eb28'
             }
+        },
+        listeners :{
+            onclick:function(){
+                alert('aaaaa');
+            }
         }
     });
     ican.add(a);
@@ -52,9 +57,5 @@ window.onload = function(){
     ican.add(lable);
     ican.show();
     
-    ican.canvas_ctx.save();
-    ican.canvas_ctx.lineWidth = 2;
-    Zxc.Canvas.strokeRect(ican.canvas_ctx,{
-        x:100,y:100,w:30,h:30
-    });
+    
 }
