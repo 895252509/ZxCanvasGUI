@@ -51,6 +51,12 @@ window.onload = function(){
             },
             onclick : function (){
                 alert('   ');
+            },
+            onmouseover : function(){
+                alert('aaaa');
+            },
+            onmouseout:function(){
+                alert('wheel');
             }
         }
     });

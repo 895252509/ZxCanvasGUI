@@ -325,6 +325,7 @@ Zxc.ZxCanvas=  function (){
     this.mouseClickPos = new Zxc.Shape.Point();
     //记录鼠标当前移动位置
     this.mousePos = new Zxc.Shape.Point();
+    this.mouseMoveHistory = null;
     
     this.event_names= Object.create(null);
     
@@ -334,12 +335,9 @@ Zxc.ZxCanvas=  function (){
         var theCanvas = e.srcElement.ZxCanvas;
         var theMousePos = e.srcElement.ZxCanvas.mousePos;
         
-        for(var i= 0; i< theCanvas.items.length; i++){
-            var theItem = theCanvas.items[i];
-            if(theMousePos.isInRect( theItem.data.rect )){
-                if(theItem.listeners.onclick !== null)
-                    theItem.listeners.onclick();
-            }
+        var inItem = Zxc.Util.findPosInItem(theMousePos,theCanvas.items);
+        if(inItem.length>0 && inItem[inItem.length-1].listeners.onclick !== null){
+            inItem[inItem.length-1].listeners.onclick();
         }
         
         var rect = new Zxc.Shape.Rect(theCanvas.items[0].data.rect);
@@ -347,36 +345,92 @@ Zxc.ZxCanvas=  function (){
         
         console.log('mouse click X:'+theMousePos.x+' Y:'+theMousePos.y);
         
-        //debugger;
     };
     //鼠标双击事件
     this.event_names.dblclick    = function(e){};
     //鼠标右击打开菜单的事件
-    this.event_names.contextmenu = function(e){return false;};
+    this.event_names.contextmenu = function(e){
+        return false;
+    };
     //鼠标滚轮滑动事件
-    this.event_names.wheel       = function(e){var attr = 'wheelDelta';console.log(attr +' : '+ e[attr]);};
+    this.event_names.wheel       = function(e){
+        var attr = 'wheelDelta';
+        console.log(attr +' : '+ e[attr]);
+        
+        e.srcElement.ZxCanvas.mousePos = new Zxc.Shape.Point(e.offsetX,e.offsetY);
+        var theCanvas = e.srcElement.ZxCanvas;
+        var theMousePos = e.srcElement.ZxCanvas.mousePos;
+        
+        var inItem = Zxc.Util.findPosInItem(theMousePos,theCanvas.items);
+        if(inItem.length>0 && inItem[inItem.length-1].listeners.onmousewheel  !== null){
+            inItem[inItem.length-1].listeners.onmousewheel();
+        }
+        
+        console.log('mouse click X:'+theMousePos.x+' Y:'+theMousePos.y);
+    };
     //鼠标移动事件
     this.event_names.mousemove   = function(e){
         e.srcElement.ZxCanvas.mousePos = new Zxc.Shape.Point(e.offsetX,e.offsetY);
         var theMousePos = e.srcElement.ZxCanvas.mousePos;
         console.log('mouse move X:'+theMousePos.x+' Y:'+theMousePos.y);
         
+        e.srcElement.ZxCanvas.mousePos = new Zxc.Shape.Point(e.offsetX,e.offsetY);
+        var theCanvas = e.srcElement.ZxCanvas;
+        var theMousePos = e.srcElement.ZxCanvas.mousePos;
+        var inItem = Zxc.Util.findPosInItem(theMousePos,theCanvas.items);
+        
+        for(var i=0;i<inItem.length;i++){
+            if(Zx.Util.isInArray(theCanvas.mouseMoveHistory,inItem[i]) === -1 && inItem[i].listeners.onmouseover!==null){
+                inItem[i].listeners.onmouseover();
+            };
+        }
+        
+        for(var i=0;i<(theCanvas.mouseMoveHistory!==null?theCanvas.mouseMoveHistory.length:0);i++){
+            if(Zx.Util.isInArray(inItem,theCanvas.mouseMoveHistory[i]) === -1 && theCanvas.mouseMoveHistory[i].listeners.onmouseout!==null){
+                theCanvas.mouseMoveHistory[i].listeners.onmouseout();
+            };
+        }
+        
+        if(inItem.length>0 && inItem[inItem.length-1].listeners.onmousemove  !== null){
+            inItem[inItem.length-1].listeners.onmousemove();
+        }
+        theCanvas.mouseMoveHistory= inItem;
     };
     //鼠标抬起事件
-    this.event_names.mouseup     = function(e){};
+    this.event_names.mouseup     = function(e){
+        e.srcElement.ZxCanvas.mousePos = new Zxc.Shape.Point(e.offsetX,e.offsetY);
+        var theCanvas = e.srcElement.ZxCanvas;
+        var theMousePos = e.srcElement.ZxCanvas.mousePos;
+        
+        var inItem = Zxc.Util.findPosInItem(theMousePos,theCanvas.items);
+        if(inItem.length>0 && inItem[inItem.length-1].listeners.onmouseup  !== null){
+            inItem[inItem.length-1].listeners.onmouseup();
+        }
+    };
     //鼠标滑过事件
-    this.event_names.mouseover   = function(e){};
+    this.event_names.mouseover   = function(e){
+        
+    };
     //鼠标移出事件
-    this.event_names.mouseout    = function(e){};
+    this.event_names.mouseout    = function(e){
+        
+    };
     //键盘按下事件
-    this.event_names.keydown     = function(e){};
-    this.event_names.keypress    = function(e){};
-    this.event_names.keyup       = function(e){};
+    this.event_names.keydown     = function(e){
+        
+    };
+    this.event_names.keypress    = function(e){
+        
+    };
+    this.event_names.keyup       = function(e){
+        
+    };
     
     this.width = 0;
     this.height = 0;
     
     this.items = new Array();
+
 }
 
     /*
@@ -522,11 +576,22 @@ Zxc.Util = function (){
         }
     }
     
+    function findPosInItem(_pos,_items){
+        if(!_pos instanceof Zxc.Shape.Point) throw new Error('参数类型应该是一个POINT.');
+        var arrItem = [];
+        for(var i= 0; i< _items.length; i++){
+            var theItem = _items[i];
+            if( _pos.isInRect( theItem.data.rect )){
+                arrItem.push(theItem);
+            }
+        }
+        return arrItem;
+    }
     
     return {
         decodeFont      : decodeFont,
-        decodeBorder    : decodeBorder
-        
+        decodeBorder    : decodeBorder,
+        findPosInItem   : findPosInItem
     }
     
 }();
@@ -677,6 +742,9 @@ Zxc.ItemBase = function (){
         this.onready      = null;
         this.onmouseover  = null;
         this.onmouseout   = null; 
+        this.onmousemove  = null;
+        this.onmousewheel = null;
+        this.onmouseup    = null;
         this.ontoggle     = null;
         this.onfocus      = null;
         this.onblur       = null;

@@ -6,9 +6,7 @@ div,body,canvas{
 
 #z-canvas {
     position: absolute;
-    top: 100px;
-    left: 100px;
-    width:640px;
-    height: 480px;
+    top: 0px;
+    left: 0px;
     background-color: rgb(249, 255, 242);
 }
