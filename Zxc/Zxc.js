@@ -343,8 +343,6 @@ Zxc.ZxCanvas=  function (){
         var rect = new Zxc.Shape.Rect(theCanvas.items[0].data.rect);
         theMousePos.isInRect(rect);
         
-        console.log('mouse click X:'+theMousePos.x+' Y:'+theMousePos.y);
-        
     };
     //鼠标双击事件
     this.event_names.dblclick    = function(e){};
@@ -355,8 +353,7 @@ Zxc.ZxCanvas=  function (){
     //鼠标滚轮滑动事件
     this.event_names.wheel       = function(e){
         var attr = 'wheelDelta';
-        console.log(attr +' : '+ e[attr]);
-        
+
         e.srcElement.ZxCanvas.mousePos = new Zxc.Shape.Point(e.offsetX,e.offsetY);
         var theCanvas = e.srcElement.ZxCanvas;
         var theMousePos = e.srcElement.ZxCanvas.mousePos;
@@ -365,15 +362,12 @@ Zxc.ZxCanvas=  function (){
         if(inItem.length>0 && inItem[inItem.length-1].listeners.onmousewheel  !== null){
             inItem[inItem.length-1].listeners.onmousewheel();
         }
-        
-        console.log('mouse click X:'+theMousePos.x+' Y:'+theMousePos.y);
     };
     //鼠标移动事件
     this.event_names.mousemove   = function(e){
         e.srcElement.ZxCanvas.mousePos = new Zxc.Shape.Point(e.offsetX,e.offsetY);
         var theMousePos = e.srcElement.ZxCanvas.mousePos;
-        console.log('mouse move X:'+theMousePos.x+' Y:'+theMousePos.y);
-        
+
         e.srcElement.ZxCanvas.mousePos = new Zxc.Shape.Point(e.offsetX,e.offsetY);
         var theCanvas = e.srcElement.ZxCanvas;
         var theMousePos = e.srcElement.ZxCanvas.mousePos;
@@ -845,7 +839,6 @@ debugger;
         ifont = Zxc.Util.decodeFont(theStyle.font);
     content.textBaseline = 'hanging';
     
-debugger;
     content.fillText(this.data.text,
         theStyle.x + (theStyle.w- (content.measureText(this.data.text).width))/2,
         theStyle.y + (theStyle.h- (ifont.font_size||12))/2+ 1, 
@@ -888,6 +881,10 @@ Zxc.Item.prototype.relayout = function(){
         var ifont = Zxc.Util.decodeFont(this.style.style.font); 
         this.style.style.font = ifont.font_size.toString()+'px'+' '+ifont.fontFamily;
     }
+}
+
+Zxc.Item.prototype.distroy = function (){
+    console.log(this.distroy.name);
     
 }
 
@@ -941,6 +938,11 @@ Zxc.UI = function(){
         Object.getPrototypeOf(Object.getPrototypeOf(this)).Show.call(this);
         
         
+    }
+    Lable.prototype.distroy = function(){
+        Object.getPrototypeOf(Lable.prototype).distroy();
+                                         
+                                         
     }
     
     

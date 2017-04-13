@@ -10,30 +10,13 @@ window.onload = function(){
     
     var ican = new Zxc.ZxCanvas();
     ican.Initialization('z-canvas');
-    
-    var a=  new Zxc.Item({
-        canvas_ctx : ican.getContent(),
-        style:{
-            style:{
-                x:0,
-                y:200,
-                w:200,
-                h:3,
-                font: '45px',
-                color : '#2452FF',
-                border : '2px solid #b7eb28'
-            }
-        },
-        listeners :{
-            onclick:function(){
-                alert('aaaaa');
-            }
-        }
-    });
-    ican.add(a);
+
     debugger;
     var lable = new Zxc.UI.Lable({
         canvas_ctx : ican.getContent(),
+        data:{
+            text : '旧标签'
+        },
         style:{
             style:{
                 x:0,
@@ -50,16 +33,23 @@ window.onload = function(){
                 console.log('lable oninit');
             },
             onclick : function (){
-                alert('   ');
+                console.log('lable onclick');
             },
             onmouseover : function(){
-                alert('aaaa');
+                console.log('lable onmouseover');   
             },
             onmouseout:function(){
-                alert('wheel');
-            }
+                console.log('lable onmouseout');
+            },
+            onmousewheel : function (){
+                console.log('lable onmousewheel');
+            },
+            onmousemove : function (){
+                console.log('lable onmousemove');
+            },
         }
     });
+    lable.distroy();
     ican.add(lable);
     ican.show();
     
